@@ -18,7 +18,7 @@ set :rbenv_custom_path, '/home/ec2-user/.rbenv'
 # require "capistrano/chruby"
 require 'capistrano/bundler'
 require 'capistrano3/unicorn'
-require 'capistrano/rails/assets'
+# require 'capistrano/rails/assets'
 require "capistrano/rails/migrations"
 # require "capistrano/passenger"
 
