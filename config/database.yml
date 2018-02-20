@@ -28,6 +28,12 @@ test:
   <<: *default
   database: chat_smndiaye_test
 
+staging:
+  <<: *default
+  database: chat_smndiaye_staging
+  username: chat_smndiaye
+  password: <%= ENV['CHAT_SMNDIAYE_DATABASE_PASSWORD'] %>
+
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
 # ever seen by anyone, they now have access to your database.
