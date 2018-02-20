@@ -29,10 +29,13 @@ test:
   database: chat_smndiaye_test
 
 staging:
-  <<: *default
-  database: chat_smndiaye_staging
-  username: chat_smndiaye
-  password: <%= ENV['CHAT_SMNDIAYE_DATABASE_PASSWORD'] %>
+  adapter: mysql2
+  encoding: utf8
+  database: <%= ENV['RDS_DB_NAME'] %>
+  username: <%= ENV['RDS_USERNAME'] %>
+  password: <%= ENV['RDS_PASSWORD'] %>
+  host: <%= ENV['RDS_HOSTNAME'] %>
+  port: <%= ENV['RDS_PORT'] %>
 
 # As with config/secrets.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
