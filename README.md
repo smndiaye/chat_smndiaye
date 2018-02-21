@@ -1,6 +1,9 @@
-# chat_smndiaye
-
-### 1. Rails 5 + Webpacker + React JS Setup
+### Table of Contents
+  - [Webpacker and ReactJS Setup](#rails-5,-webpacker-and-reactjs-setup)
+  - [Unicorn and Capistrano setup](#unicorn-and-capistrano-setup)
+  - [CircleCi Setup](#circleci-setup)
+  
+### Rails 5, Webpacker and ReactJS Setup
 - references
   - [webpacker github](https://github.com/rails/webpacker)
 - Environment
@@ -11,7 +14,7 @@
 - install webpacker
   - rails \_5.1.5_ new app_name -d mysql --webpack=react
   
-### 2. unicorn + capistrano setup
+### Unicorn and Capistrano Setup
 - references
   - [unicorn github](https://github.com/defunkt/unicorn)
   - [capistrano github](https://github.com/capistrano/capistrano)
@@ -179,3 +182,93 @@
    - deploy command
     
         `bundle exec cap staging deploy`
+
+### CircleCi Setup
+
+- rspec
+
+    ```
+    # Gemfile
+    group :development, :test do
+      gem 'rspec', '~> 3.5'
+    end
+    
+    # Generate rspec files
+    rpsec --init
+    ```
+    
+- create .circleci/config.yml
+
+    ```
+    version: 2
+    jobs:
+      build:
+        docker:
+           - image: circleci/ruby:2.4.1-node-browsers
+           - image: library/mysql:5.7
+             command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
+             env:
+               - MYSQL_ROOT_PASSWORD=chat_smndiaye
+               - MYSQL_DATABASE=chat_test
+    
+        working_directory: ~/chat_smndiaye
+    
+        steps:
+          - checkout
+    
+          # Download and cache dependencies
+          - restore_cache:
+              keys:
+              - v1-dependencies-{{ checksum "Gemfile.lock" }}
+              # fallback to using the latest cache if no exact match is found
+              - v1-dependencies-
+    
+          # Restore yarn / webpacker cache
+          - restore_cache:
+              keys:
+              - monoqn-web-yarn-{{ checksum "yarn.lock" }}
+              - monoqn-web-yarn-
+    
+          # Install Dependencies
+          - run:
+              name: install dependencies
+              command: |
+                bundle install --jobs=4 --retry=3 --path vendor/bundle
+    
+          # Install yarn
+          - run:
+              name: yarn install
+              command: yarn install
+    
+          # Save cache
+          - save_cache:
+              paths:
+                - ./vendor/bundle
+              key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+    
+          # Store yarn / webpacker cache
+          - save_cache:
+              paths:
+                - node_modules
+              key: monoqn-web-yarn-{{ checksum "yarn.lock" }}
+    
+    
+          # Webpacker compile
+          - run:
+              name: webpacker compile
+              command: RAILS_ENV=test bundle exec bin/webpack
+    
+          # Database setup
+          - run: bundle exec rake db:create
+          - run: bundle exec rake db:schema:load
+    
+          # Rspec tests
+          - run:
+              name: rspec
+              command: |
+                 bundle exec rspec --profile 10 \
+                                   --format RspecJunitFormatter \
+                                   --out test_results/rspec.xml \
+                                   --format progress \
+                                   $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+    ```
