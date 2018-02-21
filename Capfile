@@ -19,7 +19,7 @@ set :rbenv_custom_path, '/home/ec2-user/.rbenv'
 require 'capistrano/bundler'
 require 'capistrano3/unicorn'
 # require 'capistrano/rails/assets'
-require 'capistrano/rails/migrations'
+require "capistrano/rails/migrations"
 # require "capistrano/passenger"
 
 # Load custom tasks from `lib/capistrano/tasks` if you have any defined
