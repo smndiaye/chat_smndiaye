@@ -53,6 +53,9 @@ group :development, :test do
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
   gem 'capistrano3-unicorn'
+
+  # Rspec
+  gem 'rspec', '~> 3.5'
 end
 
 group :development do
