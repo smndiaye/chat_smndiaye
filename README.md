@@ -52,8 +52,6 @@
         ```
     - Capfile
         ```
-        # frozen_string_literal: true
-        
         # Load DSL and set up stages
         require 'capistrano/setup'
         
@@ -104,14 +102,6 @@
           task :restart do
             invoke 'unicorn:restart'
           end
-        
-          # custom task
-          # desc 'Copy files'
-          # task :copy_files do
-          #   on roles(:all) do
-          #     execute "cp -r /var/apps/files/* #{release_path}/public"
-          #   end
-          # end
         end
         
         # before 'deploy:symlink:release', 'deploy:copy_files'
