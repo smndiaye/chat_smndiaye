@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # frozen_string_literal: true
 
 @app_path = '/var/apps/chat_smndiaye/current'
