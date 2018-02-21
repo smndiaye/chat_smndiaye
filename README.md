@@ -122,9 +122,6 @@
             forward_agent: true,
             auth_methods: %w[publickey]
         ```
-    - command
-        
-        `bundle exec cap staging deploy`
     
 - unicorn setup
 
@@ -179,6 +176,6 @@
         
         ```
  
-   - command
+   - deploy command
     
-        `bundle exec unicorn_rails -c unicorn/staging.rb -E staging -D`
+        `bundle exec cap staging deploy`
