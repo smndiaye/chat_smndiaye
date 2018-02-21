@@ -2,12 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-       - image: circleci/ruby:2.4.1-node-browsers
+       - image: circleci/ruby:2.4.2-node-browsers
+         env:
+           - RAILS_ENV=test
        - image: library/mysql:5.7
          command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
          env:
-           - MYSQL_ROOT_PASSWORD=chat_smndiaye
-           - MYSQL_DATABASE=chat_test
+           - MYSQL_ALLOW_EMPTY_PASSWORD=true
+           - MYSQL_ROOT_HOST=%
 
     working_directory: ~/chat_smndiaye
 
@@ -54,7 +56,7 @@ jobs:
       # Webpacker compile
       - run:
           name: webpacker compile
-          command: RAILS_ENV=test bundle exec bin/webpack
+          command: bundle exec bin/webpack
 
       # Database setup
       - run: bundle exec rake db:create
@@ -64,8 +66,9 @@ jobs:
       - run:
           name: rspec
           command: |
-             bundle exec rspec --profile 10 \
-                               --format RspecJunitFormatter \
-                               --out test_results/rspec.xml \
-                               --format progress \
-                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+             RAILS_ENV=test bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
+#             bundle exec rspec --profile 10 \
+#                               --format RspecJunitFormatter \
+#                               --out test_results/rspec.xml \
+#                               --format progress \
+#                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)

@@ -2,12 +2,11 @@ default: &default
   adapter: mysql2
   encoding: utf8
   database: <%= ENV['CHAT_DB_NAME'] %>
-  username: <%= ENV['CHAT_DB_USERNAME'] %>
-  password: <%= ENV['CHAT_DB_PASSWORD'] %>
-  host: <%= ENV['CHAT_DB_HOSTNAME'] %>
-  port: <%= ENV['CHAT_DB_PORT'] %>
+  username: <%= ENV['CHAT_DB_USERNAME'] || 'root' %>
+  password: <%= ENV['CHAT_DB_PASSWORD'] || ENV['MYSQL_ROOT_PASSWORD'] %>
+  host: <%= ENV['CHAT_DB_HOSTNAME'] || '127.0.0.1' %>
+  port: <%= ENV['CHAT_DB_PORT']|| 3306 %>
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  socket: /tmp/mysql.sock
 
 development:
   <<: *default
@@ -19,11 +18,5 @@ production:
   <<: *default
 
 test:
-  adapter: mysql2
-  encoding: utf8
-  host: 127.0.0.1
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  socket: /tmp/mysql.sock
-  username: root
-  password: chat_smndiaye
+  <<: *default
   database: chat_test
