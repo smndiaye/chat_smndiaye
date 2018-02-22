@@ -26,8 +26,8 @@ jobs:
       # Restore yarn / webpacker cache
       - restore_cache:
           keys:
-          - monoqn-web-yarn-{{ checksum "yarn.lock" }}
-          - monoqn-web-yarn-
+          - chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
+          - chat-smndiaye-yarn-
 
       # Install Dependencies
       - run:
@@ -50,7 +50,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: monoqn-web-yarn-{{ checksum "yarn.lock" }}
+          key: chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
 
 
       # Webpacker compile
@@ -66,9 +66,8 @@ jobs:
       - run:
           name: rspec
           command: |
-             RAILS_ENV=test bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
-#             bundle exec rspec --profile 10 \
-#                               --format RspecJunitFormatter \
-#                               --out test_results/rspec.xml \
-#                               --format progress \
-#                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+             bundle exec rspec --profile 10 \
+                               --format RspecJunitFormatter \
+                               --out test_results/rspec.xml \
+                               --format progress \
+                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
