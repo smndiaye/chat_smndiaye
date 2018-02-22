@@ -286,6 +286,11 @@ Deploy rails code to aws ec2 when staging branch build runs
 - .circleci/config.yml
 
     ```
+    - run:
+        name: install dependencies
+        command: |
+          sudo apt-get update && sudo apt-get install -y awscli
+        
     # Staging Deploy
     - deploy:
         name:  Capistrano staging deploy

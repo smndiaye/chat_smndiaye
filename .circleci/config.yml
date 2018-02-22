@@ -33,6 +33,7 @@ jobs:
       - run:
           name: install dependencies
           command: |
+            sudo apt-get update && sudo apt-get install -y awscli
             bundle install --jobs=4 --retry=3 --path vendor/bundle
 
       # Install yarn
