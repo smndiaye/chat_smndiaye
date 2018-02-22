@@ -14,3 +14,12 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # application.js, application.css, and all non-JS/CSS in the app/assets
 # folder are already added.
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
+
+js_directory      = 'app/assets/javascripts/'
+webpack_directory = 'app/javascript/pack/'
+css_directory     = 'app/assets/stylesheets/'
+javascripts       = Dir["#{js_directory}**/*.js"].map { |x| x.gsub(js_directory, '') }
+webpack           = Dir["#{webpack_directory}*.js"].map { |x| x.gsub(webpack_directory, '') }
+css               = Dir["#{css_directory}**/*.css"].map { |x| x.gsub(css_directory, '') }
+
+Rails.application.config.assets.precompile += (javascripts + css + webpack)
