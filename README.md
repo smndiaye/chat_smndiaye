@@ -334,11 +334,22 @@ Deploy rails code to aws ec2 when staging branch build runs
 
    ```
    
-- Circle Ci SSH Permissions settings
+- Circle Ci Environment Variables Setting: 
+    - Create IAM user having EC2 access policy.
+    - Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as circle ci environment variables.
 
-    - ![alt text](public/img/readme/circleci_ssh_1.png)
-    - ![alt text](public/img/readme/circleci_ssh_2.png)
-    - ![alt text](public/img/readme/circleci_ssh_3.png)
+    ![alt text](public/img/readme/circleci_env_1.png)
+    
+    ![alt text](public/img/readme/circleci_env_2.png)
+    
+- Circle Ci SSH Permissions Setting
+
+    ![alt text](public/img/readme/circleci_ssh_1.png)
+    
+    ![alt text](public/img/readme/circleci_ssh_2.png)
+    
+    ![alt text](public/img/readme/circleci_ssh_3.png)
+    
 - config/deploy/staging.rb
 
 Add following ssh options
