@@ -2,6 +2,7 @@
   - [Webpacker and ReactJS Setup](#rails-5,-webpacker-and-reactjs-setup)
   - [Unicorn and Capistrano setup](#unicorn-and-capistrano-setup)
   - [CircleCi Setup](#circleci-setup)
+  - [Deploy From CircleCi](#deploy-from-circleci)
   
 ### Rails 5, Webpacker and ReactJS Setup
 - references
@@ -277,3 +278,67 @@
                                    --format progress \
                                    $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
     ```
+    
+### Deploy From CircleCi
+
+Deploy rails code to aws ec2 when staging branch build runs
+
+- .circleci/config.yml
+
+    ```
+    # Staging Deploy
+    - deploy:
+        name:  Capistrano staging deploy
+        command: |
+          if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+            ./sh/staging_deploy.sh
+          fi
+    ```
+    
+- sh/staging_deploy.sh
+
+   Dont forget to change file permission: `chmod a+x sh/staging_deploy.sh`
+   ```
+   #!/usr/bin/env bash
+   
+   set -ex
+   
+   export AWS_DEFAULT_REGION="ap-northeast-1"
+   SECURITY_GROUP_ID="security group id"
+   
+   echo "Get Circle Ci IP"
+   IP=`timeout 10 wget -q -O - ipcheck.ieserver.net`
+   if [ "$?" -ne 0 ]
+   then
+     IP=`timeout 10 curl -s -f inet-ip.info`
+   fi
+   if [ "$?" -ne 0 ]
+   then
+     IP=`timeout 10 curl -s -f ifconfig.me`
+   fi
+   
+   
+   echo "Removing $IP from security group:$SECURITY_GROUP_ID on 0 1 2 3 15 signals"
+   trap "aws ec2 revoke-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22022 --cidr $IP/32" 0 1 2 3 15
+   
+   echo "Opening up SSH on security group:$SECURITY_GROUP_ID for $IP"
+   aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22022 --cidr $IP/32
+   
+   echo "Running cap staging deploy"
+   bundle exec cap staging deploy
+
+   ```
+   
+- Circle Ci SSH Permissions settings
+
+    - ![alt text](public/img/readme/circleci_ssh_1.png)
+    - ![alt text](public/img/readme/circleci_ssh_2.png)
+    - ![alt text](public/img/readme/circleci_ssh_3.png)
+- config/deploy/staging.rb
+
+Add following ssh options
+```
+set :ssh_options, keys: %w[~/.ssh/id_rsa_11cba49f92d1565316b56b3456d6e43a],
+                  forward_agent: true,
+                  auth_methods: %w[publickey]
+```
