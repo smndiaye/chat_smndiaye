@@ -191,10 +191,13 @@
     # Gemfile
     group :development, :test do
       gem 'rspec', '~> 3.5'
+      gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+      gem 'rspec_junit_formatter', '~> 0.3.0'
     end
     
     # Generate rspec files
-    rpsec --init
+    bundle install
+    rails generate rspec:install
     ```
     
 - create .circleci/config.yml
@@ -204,12 +207,14 @@
     jobs:
       build:
         docker:
-           - image: circleci/ruby:2.4.1-node-browsers
+           - image: circleci/ruby:2.4.2-node-browsers
+             env:
+               - RAILS_ENV=test
            - image: library/mysql:5.7
              command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
              env:
-               - MYSQL_ROOT_PASSWORD=chat_smndiaye
-               - MYSQL_DATABASE=chat_test
+               - MYSQL_ALLOW_EMPTY_PASSWORD=true
+               - MYSQL_ROOT_HOST=%
     
         working_directory: ~/chat_smndiaye
     
@@ -226,8 +231,8 @@
           # Restore yarn / webpacker cache
           - restore_cache:
               keys:
-              - monoqn-web-yarn-{{ checksum "yarn.lock" }}
-              - monoqn-web-yarn-
+              - chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
+              - chat-smndiaye-yarn-
     
           # Install Dependencies
           - run:
@@ -250,13 +255,13 @@
           - save_cache:
               paths:
                 - node_modules
-              key: monoqn-web-yarn-{{ checksum "yarn.lock" }}
+              key: chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
     
     
           # Webpacker compile
           - run:
               name: webpacker compile
-              command: RAILS_ENV=test bundle exec bin/webpack
+              command: bundle exec bin/webpack
     
           # Database setup
           - run: bundle exec rake db:create

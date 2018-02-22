@@ -56,6 +56,8 @@ group :development, :test do
 
   # Rspec
   gem 'rspec', '~> 3.5'
+  gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
+  gem 'rspec_junit_formatter', '~> 0.3.0'
 end
 
 group :development do
