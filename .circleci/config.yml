@@ -71,3 +71,11 @@ jobs:
                                --out test_results/rspec.xml \
                                --format progress \
                                $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+
+      # Staging Deploy
+      - deploy:
+          name:  Capistrano staging deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "staging" ]; then
+              ./sh/staging_deploy.sh
+            fi
