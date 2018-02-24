@@ -75,8 +75,8 @@ jobs:
 
       # Staging Deploy
       - deploy:
-          name:  Capistrano staging deploy
+          name:  Capistrano development deploy
           command: |
-            if [ "${CIRCLE_BRANCH}" == "staging" ]; then
-              ./sh/staging_deploy.sh
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              ./sh/develop_deploy.sh
             fi

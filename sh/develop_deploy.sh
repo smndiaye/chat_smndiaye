@@ -23,5 +23,5 @@ trap "aws ec2 revoke-security-group-ingress --group-id $SECURITY_GROUP_ID --prot
 echo "Opening up SSH on security group:$SECURITY_GROUP_ID for $IP"
 aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22022 --cidr $IP/32
 
-echo "Running cap staging deploy"
-bundle exec cap staging deploy
+echo "Running cap development deploy"
+bundle exec cap development deploy
