@@ -1,0 +1,82 @@
+version: 2
+jobs:
+  build:
+    docker:
+       - image: circleci/ruby:2.4.2-node-browsers
+         env:
+           - RAILS_ENV=test
+       - image: library/mysql:5.7
+         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
+         env:
+           - MYSQL_ALLOW_EMPTY_PASSWORD=true
+           - MYSQL_ROOT_HOST=%
+
+    working_directory: ~/chat_smndiaye
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      # Restore yarn / webpacker cache
+      - restore_cache:
+          keys:
+          - chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
+          - chat-smndiaye-yarn-
+
+      # Install Dependencies
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt-get update && sudo apt-get install -y awscli
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      # Install yarn
+      - run:
+          name: yarn install
+          command: yarn install
+
+      # Save cache
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # Store yarn / webpacker cache
+      - save_cache:
+          paths:
+            - node_modules
+          key: chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
+
+
+      # Webpacker compile
+      - run:
+          name: webpacker compile
+          command: bundle exec bin/webpack
+
+      # Database setup
+      - run: bundle exec rake db:create
+      - run: bundle exec rake db:schema:load
+
+      # Rspec tests
+      - run:
+          name: rspec
+          command: |
+             bundle exec rspec --profile 10 \
+                               --format RspecJunitFormatter \
+                               --out test_results/rspec.xml \
+                               --format progress \
+                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+
+      # Staging Deploy
+      - deploy:
+          name:  Capistrano development deploy
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+              ./sh/develop_deploy.sh
+            fi
