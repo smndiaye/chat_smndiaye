@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-set :stage, :staging
-set :branch, 'staging'
-set :rails_env, 'staging'
+set :stage, :development
+set :branch, 'develop'
+set :rails_env, 'development'
 set :bundle_without, 'production'
 
 server '54.178.42.25', user: 'ec2-user', roles: %w[web app]
