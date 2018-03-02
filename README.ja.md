@@ -1,26 +1,34 @@
-### Table of Contents
-  - [Webpacker and ReactJS Setup](#rails-5,-webpacker-and-reactjs-setup)
-  - [Unicorn and Capistrano setup](#unicorn-and-capistrano-setup)
-  - [CircleCi Setup](#circleci-setup)
-  - [Deploy From CircleCi](#deploy-from-circleci)
+### 目次
+  - [Webpackerを使ってRails5.1.5でReactを動かせる設定](#Webpackerを使ってRails5.1.5でReactを動かせる設定)
+  - [UnicornとCapistranoの設定](#UnicornとCapistranoの設定)
+  - [CircleCi2.0の設定](#CircleCi2.0の設定)
+  - [Capistranoを使ってCircleCiからec2サーバーにデプロイする設定](#Capistranoを使ってCircleCiからec2サーバーにデプロイする設定)
   
-### Rails 5, Webpacker and ReactJS Setup
-- references
+### Webpackerを使ってRails5.1.5でReactを動かせる設定
+- 参考
   - [webpacker github](https://github.com/rails/webpacker)
-- Environment
+- 環境
   - Ruby 2.4.2
   - Rails 5.1.5
   - Webpacker 3.2.2
 
-- install webpacker
+- rails newからwebpackerとreactをインストール
   - rails \_5.1.5_ new app_name -d mysql --webpack=react
+       ```
+         app
+         └── javascript
+             └── packs
+                 ├── application.js
+                 └── hello_react.jsx
+                     
+       ```
   
-### Unicorn and Capistrano Setup
-- references
+### UnicornとCapistranoの設定
+- 参考
   - [unicorn github](https://github.com/defunkt/unicorn)
   - [capistrano github](https://github.com/capistrano/capistrano)
 
-- add gems
+- gems追加
 
     ```
     # Unicorn
@@ -35,9 +43,9 @@
       gem 'capistrano3-unicorn'
     end 
     ```
-- capistrano setup
+- capistrano設定
 
-    - installation
+    - capインストール
     
         ```
             bundle install
@@ -126,7 +134,7 @@
             auth_methods: %w[publickey]
         ```
     
-- unicorn setup
+- unicorn設定
 
     - unicorn/staging.rb
     
@@ -179,13 +187,13 @@
         
         ```
  
-   - deploy command
+   - デプロイコマンド
     
         `bundle exec cap staging deploy`
 
-### CircleCi Setup
+### CircleCi2.0の設定
 
-- rspec
+- rspec追加
 
     ```
     # Gemfile
@@ -200,7 +208,7 @@
     rails generate rspec:install
     ```
     
-- create .circleci/config.yml
+- .circleci/config.ymlを追加
 
     ```
     version: 2
@@ -278,9 +286,9 @@
                                    $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
     ```
     
-### Deploy From CircleCi
+### Capistranoを使ってCircleCiからec2サーバーにデプロイする設定
 
-Deploy rails code to aws ec2 when staging branch build runs
+stagingブランチをビルドする時ec2サーバーにrailsコードをデプロイする。
 
 - .circleci/config.yml
 
@@ -301,7 +309,9 @@ Deploy rails code to aws ec2 when staging branch build runs
     
 - sh/staging_deploy.sh
 
-   Dont forget to change file permission: `chmod a+x sh/staging_deploy.sh`
+   ファイルのアクセス許可を変更するのを忘れないでください：
+   `chmod a+x sh/staging_deploy.sh`
+   
    ```
    #!/usr/bin/env bash
    
@@ -323,25 +333,25 @@ Deploy rails code to aws ec2 when staging branch build runs
    
    
    echo "Removing $IP from security group:$SECURITY_GROUP_ID on 0 1 2 3 15 signals"
-   trap "aws ec2 revoke-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22022 --cidr $IP/32" 0 1 2 3 15
+   trap "aws ec2 revoke-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22 --cidr $IP/32" 0 1 2 3 15
    
    echo "Opening up SSH on security group:$SECURITY_GROUP_ID for $IP"
-   aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22022 --cidr $IP/32
+   aws ec2 authorize-security-group-ingress --group-id $SECURITY_GROUP_ID --protocol tcp --port 22 --cidr $IP/32
    
    echo "Running cap staging deploy"
    bundle exec cap staging deploy
 
    ```
    
-- Circle Ci Environment Variables Setting: 
-    - Create IAM user having EC2 access policy.
-    - Add AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as circle ci environment variables.
+- Circle Ci上で環境変数設定する: 
+    - EC2アクセス権限を持ってるIAMユーザーを作成する。
+    - AWS_ACCESS_KEY_IDとAWS_SECRET_ACCESS_KEY環境変数としてcircle ci上に追加する。
 
     ![alt text](public/img/readme/circleci_env_1.png)
     
     ![alt text](public/img/readme/circleci_env_2.png)
     
-- Circle Ci SSH Permissions Setting
+- Circle Ci SSH 権限設定
 
     ![alt text](public/img/readme/circleci_ssh_1.png)
     
@@ -351,7 +361,7 @@ Deploy rails code to aws ec2 when staging branch build runs
     
 - config/deploy/staging.rb
 
-Add following ssh options
+`config/deploy/staging.rb` にssh設定を追加する
 ```
 set :ssh_options, keys: %w[~/.ssh/id_rsa_11cba49f92d1565316b56b3456d6e43a],
                   forward_agent: true,
