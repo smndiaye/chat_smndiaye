@@ -13,6 +13,11 @@ gem 'puma',     '~> 3.7'
 gem 'rails',    '~> 5.2.0'
 gem 'unicorn'
 
+### API ###
+gem 'grape'
+gem 'grape-entity'
+gem 'grape-rails-routes'
+
 ### Database ###
 gem 'mysql2', '>= 0.3.18', '< 0.5'
 
