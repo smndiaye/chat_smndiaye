@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Chat
   module Entities
     module V1
