@@ -61,7 +61,7 @@ jobs:
 
       # Database setup
       - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - run: bundle exec rake db:migrate
 
       # Rspec tests
       - run:
