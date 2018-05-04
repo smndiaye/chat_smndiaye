@@ -11,7 +11,7 @@ jobs:
            - MYSQL_ALLOW_EMPTY_PASSWORD=true
            - MYSQL_ROOT_HOST=%
 
-    working_directory: ~/chat_smndiaye
+    working_directory: ~/jotaay
 
     steps:
       - checkout
@@ -26,8 +26,8 @@ jobs:
       # Restore yarn / webpacker cache
       - restore_cache:
           keys:
-          - chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
-          - chat-smndiaye-yarn-
+          - jotaay-yarn-{{ checksum "yarn.lock" }}
+          - jotaay-yarn-
 
       # Install Dependencies
       - run:
@@ -51,7 +51,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
+          key: jotaay-yarn-{{ checksum "yarn.lock" }}
 
 
       # Webpacker compile
