@@ -10,9 +10,6 @@ jobs:
          env:
            - MYSQL_ALLOW_EMPTY_PASSWORD=true
            - MYSQL_ROOT_HOST=%
-           - CHAT_DB_HOSTNAME='127.0.0.1'
-           - CHAT_DB_USERNAME='root'
-           - CHAT_DB_PASSWORD=''
 
     working_directory: ~/jotaay
 
