@@ -1,12 +1,12 @@
 default: &default
   adapter: mysql2
   encoding: utf8
-  database: <%= ENV['CHAT_DB_NAME'] || 'jotaay' %>
-  username: <%= ENV['CHAT_DB_USERNAME'] || 'jotaay' %>
-  password: <%= ENV['CHAT_DB_PASSWORD'] || ENV['MYSQL_ROOT_PASSWORD'] || 'jotaay' %>
-  host: <%= ENV['CHAT_DB_HOSTNAME'] || 127.0.0.1 %>
-  port: <%= ENV['CHAT_DB_PORT']|| 3306 %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  database: <%= Rails.application.credentials.send(Rails.env).dig(:database, :database) %>
+  username: <%= Rails.application.credentials.send(Rails.env).dig(:database, :username) %>
+  password: <%= Rails.application.credentials.send(Rails.env).dig(:database, :password) %>
+  host:     <%= Rails.application.credentials.send(Rails.env).dig(:database, :host) %>
+  port:     <%= Rails.application.credentials.send(Rails.env).dig(:database, :port) %>
+  pool:     <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 development:
   <<: *default
