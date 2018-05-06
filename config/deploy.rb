@@ -3,11 +3,11 @@
 # config valid for current version and patch releases of Capistrano
 lock '~> 3.10.0'
 
-set :application, 'chat_smndiaye'
-set :repo_url, 'git@github.com:smndiaye/chat_smndiaye.git'
+set :application, 'jotaay'
+set :repo_url, 'git@github.com:smndiaye/jotaay.git'
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to, '/var/apps/chat_smndiaye'
+set :deploy_to, '/var/apps/jotaay'
 
 # Default value for linked_dirs is []
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets'

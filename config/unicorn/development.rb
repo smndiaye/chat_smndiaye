@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-@app_path = '/var/apps/chat_smndiaye/current'
+@app_path = '/var/apps/jotaay/current'
 
 worker_processes 6
 working_directory "#{@app_path}/"
