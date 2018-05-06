@@ -1,22 +1,31 @@
 default: &default
-  adapter: mysql2
+  adapter:  mysql2
   encoding: utf8
-  database: <%= Rails.application.credentials.send(Rails.env).dig(:database, :database) %>
-  username: <%= Rails.application.credentials.send(Rails.env).dig(:database, :username) %>
-  password: <%= Rails.application.credentials.send(Rails.env).dig(:database, :password) %>
-  host:     <%= Rails.application.credentials.send(Rails.env).dig(:database, :host) %>
-  port:     <%= Rails.application.credentials.send(Rails.env).dig(:database, :port) %>
   pool:     <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-
-development:
-  <<: *default
-
-staging:
-  <<: *default
-
-production:
-  <<: *default
+  port:     3306
 
 test:
   <<: *default
   database: jotaay_test
+  host:     <%= ENV['CHAT_DB_HOSTNAME'] || 'localhost'%>
+  username: <%= ENV['CHAT_DB_USERNAME'] || 'jotaay' %>
+  password: <%= ENV['CHAT_DB_PASSWORD'] || 'wX8SUaFN3LimeQ' %>
+
+development:
+  <<: *default
+  database: jotaay
+  username: jotaay
+  password: wX8SUaFN3LimeQ
+  host:     localhost
+
+## TODO investigate why using Rails.application.credentials.send(Rails.env) failing on test env
+staging:
+  <<: *default
+  database: <%= Rails.application.credentials.staging&.dig(:database, :database) %>
+  username: <%= Rails.application.credentials.staging&.dig(:database, :username) %>
+  password: <%= Rails.application.credentials.staging&.dig(:database, :password) %>
+  host:     <%= Rails.application.credentials.staging&.dig(:database, :host) %>
+  port:     <%= Rails.application.credentials.staging&.dig(:database, :port) %>
+
+production:
+  <<: *default

@@ -10,6 +10,9 @@ jobs:
          env:
            - MYSQL_ALLOW_EMPTY_PASSWORD=true
            - MYSQL_ROOT_HOST=%
+           - CHAT_DB_HOSTNAME='127.0.0.1'
+           - CHAT_DB_USERNAME='root'
+           - CHAT_DB_PASSWORD=''
 
     working_directory: ~/jotaay
 
@@ -60,8 +63,8 @@ jobs:
           command: bundle exec bin/webpack
 
       # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:migrate
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:migrate
 
       # Rspec tests
       - run:
