@@ -5,4 +5,7 @@ Rails.application.routes.draw do
 
   # APIs
   mount Chat::Base, at: '/'
+
+  # Users
+  resources :users
 end
