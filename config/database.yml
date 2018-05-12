@@ -1,8 +1,6 @@
 default: &default
   adapter:  mysql2
   encoding: utf8
-  username: <%= ENV['CHAT_DB_USERNAME'] %>
-  password: <%= ENV['CHAT_DB_PASSWORD'] %>
   pool:     <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   port:     3306
   host:     localhost
@@ -10,10 +8,14 @@ default: &default
 test:
   <<: *default
   database: jotaay_test
+  username: <%= ENV['CHAT_DB_USERNAME'] %>
+  password: <%= ENV['CHAT_DB_PASSWORD'] %>
 
 development:
   <<: *default
   database: jotaay
+  username: jotaay
+  password: wX8SUaFN3LimeQ
 
 ## TODO investigate why using Rails.application.credentials.send(Rails.env) failing on test env
 staging:
