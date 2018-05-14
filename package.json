@@ -5,7 +5,9 @@
     "@rails/webpacker": "^3.2.2",
     "babel-preset-react": "^6.24.1",
     "prop-types": "^15.6.1",
+    "range-inclusive": "^1.0.2",
     "react": "^16.3.2",
+    "react-addons": "^0.9.1-deprecated",
     "react-dom": "^16.3.2"
   },
   "devDependencies": {
