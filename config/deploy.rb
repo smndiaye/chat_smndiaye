@@ -21,13 +21,13 @@ namespace :deploy do
     invoke 'unicorn:restart'
   end
 
-  # custom task
-  # desc 'Copy files'
-  # task :copy_files do
-  #   on roles(:all) do
-  #     execute "cp -r /var/apps/files/* #{release_path}/public"
-  #   end
-  # end
+  custom task
+  desc 'Copy files'
+  task :copy_files do
+    on roles(:all) do
+      execute "cp /var/apps/files/master.key #{release_path}/config"
+    end
+  end
 end
 
 # before 'deploy:symlink:release', 'deploy:copy_files'
