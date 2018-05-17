@@ -44,8 +44,6 @@ end
 after_fork do |_server, _worker|
   if defined?(ActiveRecord::Base)
     ActiveRecord::Base.establish_connection
-    if defined?(Octopus) && Octopus.enabled?
-      ActiveRecord::Base.connection_proxy.initialize_shards(Octopus.config)
-    end
+    ActiveRecord::Base.connection_proxy.initialize_shards(Octopus.config) if defined?(Octopus) && Octopus.enabled?
   end
 end
