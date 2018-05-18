@@ -30,7 +30,7 @@ namespace :deploy do
   end
 end
 
-before 'deploy:symlink:release', 'deploy:copy_master_key'
+before 'deploy:symlink:linked_dirs', 'deploy:copy_master_key'
 after 'deploy:publishing', 'deploy:restart'
 after 'deploy:restart', 'deploy:push_new_tag'
 
