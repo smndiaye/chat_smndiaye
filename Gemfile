@@ -19,7 +19,7 @@ gem 'grape-entity'
 gem 'grape-rails-routes'
 
 ### Database ###
-gem 'mysql2', '>= 0.3.18', '< 0.5'
+gem 'pg'
 
 ### Front Side ###
 gem 'coffee-rails', '~> 4.2'
