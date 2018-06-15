@@ -20,7 +20,6 @@ staging:
   username: <%= Rails.application.credentials.staging&.dig(:database, :username) %>
   password: <%= Rails.application.credentials.staging&.dig(:database, :password) %>
   host:     <%= Rails.application.credentials.staging&.dig(:database, :host) %>
-  port:     <%= Rails.application.credentials.staging&.dig(:database, :port) %>
 
 production:
   <<: *default
