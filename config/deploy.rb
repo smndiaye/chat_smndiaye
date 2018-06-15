@@ -22,17 +22,8 @@ namespace :deploy do
   task :restart do
     invoke 'unicorn:restart'
   end
-
-  # custom task
-  desc 'Copy files'
-  task :copy_master_key do
-    on roles(:all) do
-      execute "cp /var/apps/files/master.key #{release_path}/config/"
-    end
-  end
 end
 
-before 'deploy:symlink:linked_dirs', 'deploy:copy_master_key'
 after 'deploy:publishing', 'deploy:restart'
 after 'deploy:restart', 'deploy:push_new_tag'
 
