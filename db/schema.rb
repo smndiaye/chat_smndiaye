@@ -22,12 +22,12 @@ ActiveRecord::Schema.define(version: 20_180_314_100_303) do
   end
 
   create_table 'users', options: 'ENGINE=InnoDB DEFAULT CHARSET=utf8', force: :cascade do |t|
-    t.string 'username'
-    t.integer 'age'
-    t.string 'sex'
-    t.string 'city'
-    t.string 'country'
-    t.string 'token'
+    t.string 'username', null: false
+    t.integer 'age', null: false
+    t.string 'gender', null: false
+    t.string 'city', null: false
+    t.string 'country', null: false
+    t.string 'password_digest', null: false
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
   end

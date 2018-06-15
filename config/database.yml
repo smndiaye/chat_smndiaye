@@ -3,20 +3,19 @@ default: &default
   encoding: utf8
   pool:     <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   port:     3306
+  host:     localhost
 
 test:
   <<: *default
   database: jotaay_test
-  host:     <%= ENV['CHAT_DB_HOSTNAME'] || 'localhost'%>
-  username: <%= ENV['CHAT_DB_USERNAME'] || 'jotaay' %>
-  password: <%= ENV['CHAT_DB_PASSWORD'] || 'wX8SUaFN3LimeQ' %>
+  username: <%= ENV['CHAT_DB_USERNAME'] %>
+  password: <%= ENV['CHAT_DB_PASSWORD'] %>
 
 development:
   <<: *default
   database: jotaay
   username: jotaay
   password: wX8SUaFN3LimeQ
-  host:     localhost
 
 ## TODO investigate why using Rails.application.credentials.send(Rails.env) failing on test env
 staging:
