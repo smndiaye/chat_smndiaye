@@ -1,6 +1,6 @@
 const SLACK_TOKEN       = process.env.SLACK_TOKEN;
 const PROJECT_USERNAME  = process.env.PROJECT_USERNAME;
-const PROJECT_REPO_NAME = process.env.PROJECT_REPONAME;
+const PROJECT_REPO_NAME = process.env.PROJECT_REPO_NAME;
 const GITHUB_EMAIL      = process.env.GITHUB_EMAIL;
 const GITHUB_TOKEN      = process.env.GITHUB_TOKEN;
 const GITHUB_USERNAME   = process.env.GITHUB_USERNAME;
@@ -19,7 +19,7 @@ controller.spawn({ token: SLACK_TOKEN }).startRTM();
 controller.hears(
   '(.*)',
   ['ambient','mention'],
-  (bot, message) => { controller.reply(message, message.text); }
+  (bot, message) => { bot.reply(message, message.text); }
   );
 
 const exec = require('child_process').exec;
