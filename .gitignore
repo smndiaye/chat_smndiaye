@@ -6,6 +6,7 @@
 
 # Ignore bundler config.
 /.bundle
+/vendor/bundle
 
 # Ignore all logfiles and tempfiles.
 /log/*
@@ -24,7 +25,7 @@ yarn-debug.log*
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 # User-specific stuff:
-.idea/**/workspace.xml
+.idea/
 .idea/**/tasks.xml
 .idea/dictionaries
 
@@ -70,3 +71,6 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+
+# Ignore master key for decrypting credentials and more.
+/config/master.key

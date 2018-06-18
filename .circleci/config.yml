@@ -1,0 +1,83 @@
+version: 2
+jobs:
+  build:
+    docker:
+       - image: circleci/ruby:2.5.1-node-browsers
+         environment:
+           RAILS_ENV: test
+           RAILS_DATABASE_HOST: localhost
+           RAILS_DATABASE_USERNAME: jotaay
+       - image: circleci/postgres:9.6.2-alpine
+         environment:
+           POSTGRES_USER: jotaay
+           POSTGRES_DB: jotaay_test
+
+    working_directory: ~/jotaay
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+
+      # Restore yarn / webpacker cache
+      - restore_cache:
+          keys:
+          - jotaay-yarn-{{ checksum "yarn.lock" }}
+          - jotaay-yarn-
+
+      # Install Dependencies
+      - run:
+          name: install dependencies
+          command: |
+            sudo apt-get update && sudo apt-get install -y awscli
+            bundle install --jobs=4 --retry=3 --path vendor/bundle
+
+      # Install yarn
+      - run:
+          name: yarn install
+          command: yarn install
+
+      # Save cache
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
+
+      # Store yarn / webpacker cache
+      - save_cache:
+          paths:
+            - node_modules
+          key: jotaay-yarn-{{ checksum "yarn.lock" }}
+
+
+      # Webpacker compile
+      - run:
+          name: webpacker compile
+          command: bundle exec bin/webpack
+
+      # Database setup
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:migrate
+
+      # Rspec tests
+      - run:
+          name: rspec
+          command: |
+             bundle exec rspec --profile 10 \
+                               --format RspecJunitFormatter \
+                               --out test_results/rspec.xml \
+                               --format progress \
+                               $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+
+      # Staging Deploy
+#      - deploy:
+#          name:  Capistrano development deploy
+#          command: |
+#            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+#              ./sh/develop_deploy.sh
+#            fi
