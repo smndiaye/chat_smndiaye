@@ -29,7 +29,7 @@ gem 'uglifier',     '>= 1.3.0'
 gem 'webpacker'
 
 # to be removed when ffi bug fixed
-gem 'ffi', '1.9.18'
+# gem 'ffi', '1.9.18'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
