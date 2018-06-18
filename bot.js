@@ -5,7 +5,6 @@ const GITHUB_EMAIL      = process.env.GITHUB_EMAIL;
 const GITHUB_TOKEN      = process.env.GITHUB_TOKEN;
 const GITHUB_USERNAME   = process.env.GITHUB_USERNAME;
 
-
 if (!SLACK_TOKEN) {
   process.stderr.write('Exit because SLACK_TOKEN not found in environment variables !');
   process.exit(1)
@@ -35,8 +34,8 @@ const release_start = function(message) {
           git flow release start ${message.match[1]} --fetch &&
           git flow release publish ${message.match[1]} &&
           hub pull-request -b master -r smndiaye-aws -a ${GITHUB_USERNAME} \
-                           -l 'type: enhancement','status: under review' \
-                           -m '👀 new ${message.match[1]} release' &&
+                           -l 'type: deploy' \
+                           -m '👀 new release: version ${message.match[1]}' &&
           git flow release delete ${message.match[1]} -f`;
 };
 
@@ -59,7 +58,9 @@ controller.hears(
   exec(cmd, (err, stdout, stderr) => {
     process.stdout.write(stdout);
     process.stderr.write(stderr);
-  })
+  });
+
+  bot.reply(message, `creating new release/${message.match[1]} from develop; check PR for changes`);
 });
 
 controller.hears(/staging release finish (\d+\.\d+\.\d+)/, 'direct_mention',
@@ -75,10 +76,12 @@ controller.hears(/staging release finish (\d+\.\d+\.\d+)/, 'direct_mention',
   exec(cmd, (err, stdout, stderr) => {
     process.stdout.write(stdout);
     process.stderr.write(stderr)
-  })
+  });
+
+  bot.reply(message, `merging release/${message.match[1]} to master and creating new ${message.match[1]} tag`);
 });
 
-controller.hears(/production deploy (\d+\.\d+\.\d+)/, 'direct_mention',
+controller.hears(/staging deploy ready (\d+\.\d+\.\d+)/, 'direct_mention',
   (bot, message) => {
     bot.api.reactions.add({
       name:      'bomb',
@@ -88,11 +91,12 @@ controller.hears(/production deploy (\d+\.\d+\.\d+)/, 'direct_mention',
 
     const cmd = `cd ${PROJECT_REPO_NAME} && 
                  ${release_start(message)} && 
-                 ${release_finish(message)} &&
-                 bundle exec cap production deploy`;
+                 ${release_finish(message)}`;
 
     exec(cmd, (err, stdout, stderr) => {
       process.stdout.write(stdout);
       process.stderr.write(stderr)
-    })
+    });
+
+    bot.reply(message, `💣💣💣 getting ready to deploy v${message.match[1]} to staging server 💣💣💣`);
   });
