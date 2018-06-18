@@ -16,12 +16,6 @@ const controller = BotKit.slackbot({ debug: true });
 
 controller.spawn({ token: SLACK_TOKEN }).startRTM();
 
-controller.hears(
-  '(.*)',
-  ['ambient','mention'],
-  (bot, message) => { bot.reply(message, message.text); }
-  );
-
 const exec = require('child_process').exec;
 const url  = `https://${GITHUB_TOKEN}@github.com/${PROJECT_USERNAME}/${PROJECT_REPO_NAME}`;
 const init = `git clone --branch master ${url} &&
