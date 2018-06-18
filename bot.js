@@ -31,10 +31,10 @@ exec(init, (err, stdout, stderr) => {
 });
 
 controller.hears(
-  /staging start (\d+\.\d+\.\d+)/, 'direct_mention',
+  /staging release start (\d+\.\d+\.\d+)/, 'direct_mention',
   (bot, message) => {
     bot.api.reactions.add({
-      name:      'robot_face',
+      name:      'rocket',
       channel:   message.channel,
       timestamp: message.ts,
     });
@@ -43,9 +43,9 @@ controller.hears(
                git pull origin develop:develop &&
                git flow release start ${message.match[1]} --fetch &&
                git flow release publish ${message.match[1]} &&
-               hub pull-request -b master -r smndiaye -a ${GITHUB_USERNAME} \
+               hub pull-request -b master -r smndiaye-aws -a ${GITHUB_USERNAME} \
                                 -l 'type: enhancement','status: under review' \
-                                -m '🎉 Bump version to ${message.match[1]}' &&
+                                -m '👀 new ${message.match[1]} release' &&
                git flow release delete ${message.match[1]} -f`;
 
   exec(cmd, (err, stdout, stderr) => {
@@ -54,17 +54,17 @@ controller.hears(
   })
 });
 
-controller.hears(/release finish (\d+\.\d+\.\d+)/, 'direct_mention',
+controller.hears(/staging release finish (\d+\.\d+\.\d+)/, 'direct_mention',
   (bot, message) => {
     bot.api.reactions.add({
-      name:      'robot_face',
+      name:      'rocket',
       channel:   message.channel,
       timestamp: message.ts,
   });
 
   const cmd = `cd ${PROJECT_REPO_NAME} &&
                git flow release track ${message.match[1]} &&
-               git flow release finish ${message.match[1]} --fetch --push --message '🎉 Bump version to'`;
+               git flow release finish ${message.match[1]} --fetch --push --message '👀 new release'`;
 
   exec(cmd, (err, stdout, stderr) => {
     process.stdout.write(stdout);
