@@ -30,6 +30,21 @@ exec(init, (err, stdout, stderr) => {
   process.stderr.write(stderr);
 });
 
+const release_start = function(message) {
+  return `git pull origin develop:develop &&
+          git flow release start ${message.match[1]} --fetch &&
+          git flow release publish ${message.match[1]} &&
+          hub pull-request -b master -r smndiaye-aws -a ${GITHUB_USERNAME} \
+                           -l 'type: enhancement','status: under review' \
+                           -m '👀 new ${message.match[1]} release' &&
+          git flow release delete ${message.match[1]} -f`;
+};
+
+const release_finish = function(message) {
+  return `git flow release track ${message.match[1]} &&
+          git flow release finish ${message.match[1]} --fetch --push --message '👀 new release'`;
+};
+
 controller.hears(
   /staging release start (\d+\.\d+\.\d+)/, 'direct_mention',
   (bot, message) => {
@@ -39,14 +54,7 @@ controller.hears(
       timestamp: message.ts,
     });
 
-  const cmd = `cd ${PROJECT_REPO_NAME} &&
-               git pull origin develop:develop &&
-               git flow release start ${message.match[1]} --fetch &&
-               git flow release publish ${message.match[1]} &&
-               hub pull-request -b master -r smndiaye-aws -a ${GITHUB_USERNAME} \
-                                -l 'type: enhancement','status: under review' \
-                                -m '👀 new ${message.match[1]} release' &&
-               git flow release delete ${message.match[1]} -f`;
+  const cmd = `cd ${PROJECT_REPO_NAME} && ${release_start(message)}`;
 
   exec(cmd, (err, stdout, stderr) => {
     process.stdout.write(stdout);
@@ -62,12 +70,29 @@ controller.hears(/staging release finish (\d+\.\d+\.\d+)/, 'direct_mention',
       timestamp: message.ts,
   });
 
-  const cmd = `cd ${PROJECT_REPO_NAME} &&
-               git flow release track ${message.match[1]} &&
-               git flow release finish ${message.match[1]} --fetch --push --message '👀 new release'`;
+  const cmd = `cd ${PROJECT_REPO_NAME} && ${release_finish(message)}`;
 
   exec(cmd, (err, stdout, stderr) => {
     process.stdout.write(stdout);
     process.stderr.write(stderr)
   })
 });
+
+controller.hears(/production deploy (\d+\.\d+\.\d+)/, 'direct_mention',
+  (bot, message) => {
+    bot.api.reactions.add({
+      name:      'bomb',
+      channel:   message.channel,
+      timestamp: message.ts,
+    });
+
+    const cmd = `cd ${PROJECT_REPO_NAME} && 
+                 ${release_start(message)} && 
+                 ${release_finish(message)} &&
+                 bundle exec cap production deploy`;
+
+    exec(cmd, (err, stdout, stderr) => {
+      process.stdout.write(stdout);
+      process.stderr.write(stderr)
+    })
+  });
