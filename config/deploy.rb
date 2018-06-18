@@ -15,7 +15,7 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets'
 append :linked_files, 'config/master.key'
 
 # Default value for keep_releases is 5
-set :keep_releases, 3
+set :keep_releases, 2
 
 namespace :deploy do
   desc 'Restart application'
@@ -25,8 +25,8 @@ namespace :deploy do
 end
 
 after 'deploy:publishing', 'deploy:restart'
-after 'deploy:restart', 'deploy:push_new_tag'
+# after 'deploy:restart', 'deploy:push_new_tag'
 
-Capistrano::DSL.stages.each do |stage|
-  after stage, 'deploy:confirm_deploy' if stage == 'staging'
-end
+# Capistrano::DSL.stages.each do |stage|
+#   after stage, 'deploy:confirm_deploy' if stage == 'staging'
+# end
