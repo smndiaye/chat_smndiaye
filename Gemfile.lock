@@ -282,7 +282,6 @@ DEPENDENCIES
   capistrano3-unicorn
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
-  ffi (= 1.9.18)
   grape
   grape-entity
   grape-rails-routes
