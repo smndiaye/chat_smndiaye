@@ -19,12 +19,6 @@ LAST_COMMIT=`git rev-list --tags --max-count=1`
 # get latest tag name
 NEW_TAG=`git describe --tags $LAST_COMMIT`
 
-# exit if no tag yet
-if [ "$NEW_TAG" == "fatal: No names found, cannot describe anything." ] ; then
-  echo 'no tag yet'
-  exit 0;
-fi
-
 # get last deployed tag
 LAST_TAG=`cat $DEPLOY_HISTORY_FILE`
 
@@ -35,7 +29,7 @@ if [ "$NEW_TAG" == "$LAST_TAG" ] ; then
 fi
 
 # deploy to staging
-#bundle exec cap staging deploy
+bundle exec cap staging deploy
 
 # update deployed tag
 echo "$NEW_TAG" > $DEPLOY_HISTORY_FILE
