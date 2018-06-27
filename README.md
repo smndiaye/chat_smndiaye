@@ -33,3 +33,7 @@ default = "XXXXXXXXX"
 #### Launch deploy server instance
 - `cd terraform/deploy_server/`
 - `sh launch_deploy_server.sh`
+
+#### References
+- [packer](https://www.packer.io/docs/index.html)
+- [terraform](https://www.terraform.io/docs/index.html)
