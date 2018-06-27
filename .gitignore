@@ -77,3 +77,7 @@ fabric.properties
 
 # Ignore last deployed version file
 deploy-version.txt
+
+# Ignore packer and terraform files
+packer
+terraform
