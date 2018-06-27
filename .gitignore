@@ -77,3 +77,11 @@ fabric.properties
 
 # Ignore last deployed version file
 deploy-version.txt
+
+# Ignore packer and terraform sensible files
+terraform/deploy_server/variables.tf
+terraform/deploy_server/.terraform
+terraform/deploy_server/terraform.tfstate
+packer/deploy_server/files/id_rsa
+packer/deploy_server/logs/build.log
+terraform/deploy_server/tfvars/deploy_server_ami.tfvars
