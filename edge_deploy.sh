@@ -40,5 +40,8 @@ bundle exec cap staging deploy
 # update deploy history
 echo "$LATEST_COMMIT" > $DEPLOY_HISTORY_FILE
 
+# checkout deploy branch
+git checkout deploy
+
 # let us know that deployment has finished
 post_to_slack "*FINISH:* deploying develop content to edge server 🎉 "
