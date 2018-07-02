@@ -22,7 +22,6 @@ LAST_TAG=`cat $DEPLOY_HISTORY_FILE`
 
 # exit if no new tag
 if [ "$NEW_TAG" == "$LAST_TAG" ] ; then
-  echo 'same as last one'
   exit 0;
 fi
 
@@ -32,6 +31,8 @@ post_to_slack () {
   curl -X POST -H 'Content-type: application/json' --data "$data" \
        https://hooks.slack.com/services/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
 }
+
+echo "############# DEPLOY START: `date '+%Y-%m-%d %H:%M:%S'` #############"
 
 # let us know that deployment has started
 message="deploying tag $NEW_TAG to production server 🎉 "
@@ -49,3 +50,5 @@ git checkout deploy
 
 # let us know that deployment has finished
 post_to_slack "*FINISH:* $message"
+
+echo "############# DEPLOY FINISH: `date '+%Y-%m-%d %H:%M:%S'` #############"

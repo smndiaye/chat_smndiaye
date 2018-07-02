@@ -16,7 +16,6 @@ LAST_DEPLOYED_COMMIT=`cat $DEPLOY_HISTORY_FILE`
 
 # exit if no new commit
 if [ "$LAST_DEPLOYED_COMMIT" == "$LATEST_COMMIT" ] ; then
-  echo 'same as last one'
   exit 0;
 fi
 
@@ -26,6 +25,8 @@ post_to_slack () {
   curl -X POST -H 'Content-type: application/json' --data "$data" \
        https://hooks.slack.com/services/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
 }
+
+echo "############# DEPLOY START: `date '+%Y-%m-%d %H:%M:%S'` #############"
 
 # checkout develop with latest deploy config then deploy
 git checkout develop
@@ -45,3 +46,5 @@ git checkout deploy
 
 # let us know that deployment has finished
 post_to_slack "*FINISH:* deploying develop content to edge server 🎉 "
+
+echo "############# DEPLOY FINISH: `date '+%Y-%m-%d %H:%M:%S'` #############"

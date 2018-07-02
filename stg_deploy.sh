@@ -19,8 +19,6 @@ BRANCH=`git branch --sort=-committerdate -r | \
         sed 's/^[[:space:]]*//' | \
         sed -e 's/origin\///g'`
 
-echo "branch to deploy $BRANCH"
-
 # exit if branch does not exist
 if [ -z "$BRANCH" ]; then
   exit 0;
@@ -35,12 +33,8 @@ fi
 # get last deployed commit
 LAST_DEPLOYED_COMMIT=`cat $DEPLOY_HISTORY_FILE`
 
-echo "last deployed commit $LAST_DEPLOYED_COMMIT"
-
 # get latest commit from branch to deploy
 LATEST_COMMIT=`git log -n 1 origin/$BRANCH --pretty=format:"%H"`
-
-echo "latest commit $LATEST_COMMIT"
 
 # exit if no new commit
 if [ "$LAST_DEPLOYED_COMMIT" == "$LATEST_COMMIT" ]; then
@@ -53,6 +47,8 @@ post_to_slack () {
   curl -X POST -H 'Content-type: application/json' --data "$data" \
        https://hooks.slack.com/services/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
 }
+
+echo "############# DEPLOY START: `date '+%Y-%m-%d %H:%M:%S'` #############"
 
 # let us know that deployment has started
 message="deploying $BRANCH to staging server 🎉 "
@@ -74,3 +70,5 @@ git checkout deploy
 
 # let us know that deployment has finished
 post_to_slack "*FINISH:* $message"
+
+echo "############# DEPLOY FINISH: `date '+%Y-%m-%d %H:%M:%S'` #############"
