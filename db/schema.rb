@@ -12,5 +12,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20_180_314_100_303) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension 'plpgsql'
+
+  create_table 'messages', force: :cascade do |t|
+    t.string 'content', limit: 1000
+    t.integer 'sender_id'
+    t.integer 'receiver_id'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+  end
+
+  create_table 'users', force: :cascade do |t|
+    t.string 'username'
+    t.integer 'age'
+    t.string 'sex'
+    t.string 'city'
+    t.string 'country'
+    t.string 'token'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+  end
 end

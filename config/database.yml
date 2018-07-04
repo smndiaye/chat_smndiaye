@@ -1,22 +1,25 @@
 default: &default
-  adapter: mysql2
-  encoding: utf8
-  database: <%= ENV['CHAT_DB_NAME'] %>
-  username: <%= ENV['CHAT_DB_USERNAME'] || 'root' %>
-  password: <%= ENV['CHAT_DB_PASSWORD'] || ENV['MYSQL_ROOT_PASSWORD'] %>
-  host: <%= ENV['CHAT_DB_HOSTNAME'] || '127.0.0.1' %>
-  port: <%= ENV['CHAT_DB_PORT']|| 3306 %>
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  adapter:  postgresql
+  encoding: unicode
+  pool:     <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } %>
 
-development:
+development: &develop
   <<: *default
+  host:     localhost
+  database: jotaay
+  username: jotaay
 
+test:
+  <<: *develop
+  database: jotaay_test
+
+## TODO investigate why using Rails.application.credentials.send(Rails.env) failing on test env
 staging:
   <<: *default
+  database: <%= Rails.application.credentials.staging&.dig(:database, :database) %>
+  username: <%= Rails.application.credentials.staging&.dig(:database, :username) %>
+  password: <%= Rails.application.credentials.staging&.dig(:database, :password) %>
+  host:     <%= Rails.application.credentials.staging&.dig(:database, :host) %>
 
 production:
   <<: *default
-
-test:
-  <<: *default
-  database: chat_test

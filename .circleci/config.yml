@@ -2,16 +2,17 @@ version: 2
 jobs:
   build:
     docker:
-       - image: circleci/ruby:2.4.2-node-browsers
-         env:
-           - RAILS_ENV=test
-       - image: library/mysql:5.7
-         command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci --innodb-large-prefix=true --innodb-file-format=Barracuda
-         env:
-           - MYSQL_ALLOW_EMPTY_PASSWORD=true
-           - MYSQL_ROOT_HOST=%
+       - image: circleci/ruby:2.5.1-node-browsers
+         environment:
+           RAILS_ENV: test
+           RAILS_DATABASE_HOST: localhost
+           RAILS_DATABASE_USERNAME: jotaay
+       - image: circleci/postgres:9.6.2-alpine
+         environment:
+           POSTGRES_USER: jotaay
+           POSTGRES_DB: jotaay_test
 
-    working_directory: ~/chat_smndiaye
+    working_directory: ~/jotaay
 
     steps:
       - checkout
@@ -26,8 +27,8 @@ jobs:
       # Restore yarn / webpacker cache
       - restore_cache:
           keys:
-          - chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
-          - chat-smndiaye-yarn-
+          - jotaay-yarn-{{ checksum "yarn.lock" }}
+          - jotaay-yarn-
 
       # Install Dependencies
       - run:
@@ -51,7 +52,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: chat-smndiaye-yarn-{{ checksum "yarn.lock" }}
+          key: jotaay-yarn-{{ checksum "yarn.lock" }}
 
 
       # Webpacker compile
@@ -60,8 +61,8 @@ jobs:
           command: bundle exec bin/webpack
 
       # Database setup
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:schema:load
+      - run: bundle exec rails db:create
+      - run: bundle exec rails db:migrate
 
       # Rspec tests
       - run:
@@ -74,9 +75,9 @@ jobs:
                                $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
 
       # Staging Deploy
-      - deploy:
-          name:  Capistrano development deploy
-          command: |
-            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              ./sh/develop_deploy.sh
-            fi
+#      - deploy:
+#          name:  Capistrano development deploy
+#          command: |
+#            if [ "${CIRCLE_BRANCH}" == "develop" ]; then
+#              ./sh/develop_deploy.sh
+#            fi
