@@ -33,13 +33,6 @@ group :development, :test do
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
 
-  ### Capistrano
-  gem 'capistrano'
-  gem 'capistrano-bundler'
-  gem 'capistrano-rails'
-  gem 'capistrano-rbenv'
-  gem 'capistrano3-unicorn'
-
   ### Rspec
   gem 'rspec', '~> 3.5'
   gem 'rspec-rails', '~> 3.4', '>= 3.4.2'
@@ -51,6 +44,15 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'web-console',           '>= 3.3.0'
+end
+
+group :deploy do
+  ### Capistrano
+  gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'capistrano3-unicorn'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
