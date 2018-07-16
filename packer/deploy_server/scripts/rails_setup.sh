@@ -42,4 +42,4 @@ rbenv install
 # gems
 gem install bundler
 rbenv rehash
-bundle install
+bundle install --without default development test

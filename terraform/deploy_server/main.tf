@@ -1,10 +1,6 @@
 provider "aws" {
-  access_key = "${var.aws_access_key}"
-  secret_key = "${var.aws_secret_key}"
-  region     = "${var.aws_region}"
+  region = "ap-northeast-1"
 }
-
-variable "deploy_server_ami" {}
 
 resource "aws_default_vpc" "default" {}
 
@@ -13,11 +9,23 @@ resource "aws_eip_association" "eip_assoc" {
   allocation_id = "${aws_eip.deploy_server.id}"
 }
 
+data "aws_ami" "deploy_server" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["deploy_server_*"]
+  }
+
+  owners = ["self"]
+}
+
 resource "aws_instance" "deploy_server" {
-  ami             = "${var.deploy_server_ami}"
+  ami             = "${data.aws_ami.deploy_server.id}"
   key_name        = "${aws_key_pair.deploy_server_key.key_name}"
   instance_type   = "t2.micro"
   security_groups = ["${aws_security_group.deploy_server-sg.name}"]
+
   tags {
     Name = "deploy_server"
   }
