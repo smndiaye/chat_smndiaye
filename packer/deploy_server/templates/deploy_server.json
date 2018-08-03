@@ -3,7 +3,8 @@
     "rails_setup_script": "rails_setup.sh",
     "repo_url": "git@github.com:smndiaye/jotaay.git",
     "ami_name": "deploy_server_{{timestamp}}",
-    "github_key": "packer/deploy_server/files/id_rsa"
+    "github_key": "packer/deploy_server/files/id_rsa",
+    "bashrc": "packer/deploy_server/files/bashrc"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -28,11 +29,16 @@
       "destination": "~/.ssh/config"
     },
     {
+      "type": "file",
+      "source": "{{user `bashrc`}}",
+      "destination": "~/.bashrc"
+    },
+    {
       "type": "shell",
       "inline":
       [
-        "chmod 400 ~/.ssh/config",
-        "chmod 400 ~/.ssh/id_rsa"
+        "chmod 400 ~/.ssh/config ~/.ssh/id_rsa",
+        ". ~/.bashrc"
       ]
     },
     {
