@@ -90,6 +90,11 @@ Layout styles
   color: #fff;
   background: #999;
   padding: 1em 1.25em;
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  text-align: center;
 }
 
 .header-heading { margin: 0; }
@@ -110,6 +115,11 @@ Layout styles
 .main, .aside
 {
   margin-bottom: 1em;
+}
+
+.main
+{
+  margin-top: 1em;
 }
 
 .aside {
