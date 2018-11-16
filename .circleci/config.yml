@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-       - image: circleci/ruby:2.4.2-node-browsers
+       - image: circleci/ruby:2.5.3-node
          env:
            - RAILS_ENV=test
        - image: library/mysql:5.7
